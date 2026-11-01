@@ -13,7 +13,7 @@ A simple Flutter notes app with a dark theme. Create colorful notes, edit them, 
 
 ## Screenshots
 
-<img src="screenshots/home.jpg" width="220"> <img src="screenshots/add-note.jpg" width="220"> <img src="screenshots/edit-note.jpg" width="220">
+<img src="Screenshots/home.jpg" width="220"> <img src="Screenshots/add-note.jpg" width="220"> <img src="Screenshots/edit-note.jpg" width="220">
 ## Tech stack
 
 | Area | Tools |
