@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:notes_app/models/note_model.dart';
 import 'package:notes_app/views/edit_note_view.dart';
+import '../../view model/notifier/note_notifier.dart';
 
-import '../../view model/cubit/note/note_cubit.dart';
 
-
-class NoteItem extends StatelessWidget {
+class NoteItem extends  ConsumerWidget {
   const NoteItem({super.key,required this.note});
   final NoteModel note ;
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context,WidgetRef ref) {
     return GestureDetector(
       onTap: (){
         Navigator.pushNamed(context, EditNoteView().id,arguments:note);
@@ -39,7 +38,7 @@ class NoteItem extends StatelessWidget {
                  child: IconButton
                    (
                    onPressed: () {
-                     BlocProvider.of<NoteCubit>(context).deleteNote(note);
+                     ref.read(notesProvider.notifier).deleteNote(note);
                    },
                    icon:Icon(Icons.delete),
                  iconSize: 30,
