@@ -1,38 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../models/note_model.dart';
+import '../../models/notes_exception.dart';
 import '../../view model/cubit/note/note_cubit.dart';
+import '../../view model/notifier/note_notifier.dart';
 import 'note_item.dart';
 
-class NoteListView extends StatelessWidget {
-
-
-  const NoteListView({
-    super.key,
-  });
+class NoteListView extends ConsumerWidget {
+  const NoteListView({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      child: BlocBuilder<NoteCubit,NoteStates>(
+  Widget build(BuildContext context, WidgetRef ref) {
+    final notesAsync = ref.watch(notesProvider);
 
-        builder: (context, state) {
-          if(state is NoteLoading){
-            return
-              CircularProgressIndicator();
-        }
-          List<NoteModel> notes= (state as NoteSuccess).notes ;
-          return ListView.builder(
+    return Expanded(
+      child: BlocListener<NoteCubit, NoteStates>(
+        listenWhen: (previous, current) => current is NoteSuccess,
+        listener: (context, state) => ref.invalidate(notesProvider),
+        child: notesAsync.when(
+          loading: () => const Center(child: CircularProgressIndicator()),
+          error: (error, stackTrace) => Center(
+            child: Text(
+              error is NotesException ? error.message : 'Something went wrong',
+            ),
+          ),
+          data: (notes) => ListView.builder(
             itemCount: notes.length,
-            itemBuilder: (BuildContext context, int index) {
-              return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: NoteItem(note: notes[index]),
-              );
-            },
-          );
-        },
+            itemBuilder: (context, index) => Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: NoteItem(note: notes[index]),
+            ),
+          ),
+        ),
       ),
     );
   }
